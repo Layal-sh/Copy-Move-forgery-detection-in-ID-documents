@@ -19,6 +19,7 @@ By developing a robust and adaptable system, we seek to provide a more comprehen
 Methodology: 
 To tackle this problem, we employed a multi-faceted methodology:
 A. Data Collection and Preprocessing: We used the MIDV2020 dataset that contained genuine ID documents. The MIDV-2020 dataset consists of 1000 video clips, 2000 scanned images, and 1000 photos of 1000 unique dummy (template) identity documents with their annotations to read the ground-truths. These samples comprise identity documents and passports for 10 different countries. Specifically, the 1000 unique dummy identity documents and the 1000 upper-right scanned identity documents are selected to represent the genuine dataset. While, the forged dataset is generated from the genuine dataset. A copy-move tampering operation of specific zones  in the genuine identity document of a specific country is applied, in our case the Albanian ID. These zones are selected as follows: For each image, the zones where textual information resides are selected as the candidate zones for applying copy-move operations to generate a forged dataset.
+![Image Description](/Images/forged example.png.jpg)
 
 Fig. 1 Genuine ID image with its forged replica
 Fig. 1 illustrates the forged ID generated from the real ID where the date of issue and expiry date were selected as a set of zones for applying a copy-move operation on, in this case the date of birth was copied and moved onto them.
