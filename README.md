@@ -19,7 +19,9 @@ By developing a robust and adaptable system, we seek to provide a more comprehen
 Methodology: 
 To tackle this problem, we employed a multi-faceted methodology:
 A. Data Collection and Preprocessing: We used the MIDV2020 dataset that contained genuine ID documents. The MIDV-2020 dataset consists of 1000 video clips, 2000 scanned images, and 1000 photos of 1000 unique dummy (template) identity documents with their annotations to read the ground-truths. These samples comprise identity documents and passports for 10 different countries. Specifically, the 1000 unique dummy identity documents and the 1000 upper-right scanned identity documents are selected to represent the genuine dataset. While, the forged dataset is generated from the genuine dataset. A copy-move tampering operation of specific zones  in the genuine identity document of a specific country is applied, in our case the Albanian ID. These zones are selected as follows: For each image, the zones where textual information resides are selected as the candidate zones for applying copy-move operations to generate a forged dataset.
-![Image Description](/Images/forged example.png.jpg)
+
+![forged example](https://github.com/Layal-sh/Copy-Move-forgery-detection-in-ID-documents/assets/80123146/38b773dd-e3c4-4f0e-80c7-0cd4719f8599)
+
 
 Fig. 1 Genuine ID image with its forged replica
 Fig. 1 illustrates the forged ID generated from the real ID where the date of issue and expiry date were selected as a set of zones for applying a copy-move operation on, in this case the date of birth was copied and moved onto them.
@@ -30,26 +32,36 @@ B. Analytical Strategies:
 Our forgery detection system follows a carefully designed process to ensure accuracy and security:
 Is It an ID? Our first step is determining whether the uploaded image is an identification document. We employ a neural network trained on a vast dataset of ID and non-ID photos to make this initial determination. 
 
+![ID or not](https://github.com/Layal-sh/Copy-Move-forgery-detection-in-ID-documents/assets/80123146/a123c138-3a16-4d70-8783-f97ff5ce035c)
+
 Fig. 2 Specifying the true class and its predicted class whether an ID or not
 Albanian or not? Next, recognizing that we're specifically targeting Albanian ID documents, we use a second model trained on a dataset of Albanian and non-Albanian IDs to filter out irrelevant documents.
+
+![alb or not](https://github.com/Layal-sh/Copy-Move-forgery-detection-in-ID-documents/assets/80123146/49967bb3-5c01-40fb-84db-742aa20a0a31)
 
 
 Fig. 3 Specifying the true class and its predicted class whether an albanian ID or other ID
 Is it Forged? Once we've confirmed that the image is an Albanian ID, our specialized forgery detection model takes over. This model combines the power of ResNet50, a well-established architecture for image analysis, with additional layers that we've fine-tuned for optimal accuracy. It meticulously examines every pixel, searching for subtle signs of tampering, inconsistencies, or duplicated elements.
- 
-Fig. 4 Recognizing whether the ID was forged or not
 
-Fig. 5 Model code snippet
+ ![identifying forged or not](https://github.com/Layal-sh/Copy-Move-forgery-detection-in-ID-documents/assets/80123146/c3d171f6-280e-4a5d-b3cf-ad3010a82822)
+
+Fig. 4 Recognizing whether the ID was forged or not
 The Forgery Deep Dive: After confirming the ID was forged, we've built a CNN model from scratch where its core is built upon Conv2D layers.These are the workhorses of image processing, designed to detect features (edges, textures, etc.) within an image. Along with using  MaxPooling2D layers, that are like downsampling tools. They shrink the image while retaining the most important information. This makes the model more efficient and helps it focus on the bigger picture. As we move through the model, the number of filters in the Conv2D layers increases. This means the model is progressively learning more complex and abstract features.
 At the deepest point, the model has 256 filters.  Then we used the UpSampling2D layers that reverse the downsampling from before. They increase the image size back to its original dimensions. The final touch lies in the last layer which is a special Conv2D layer with just one filter and a sigmoid activation function. This is often used when the model needs to produce an output image where each pixel represents a probability (like in image segmentation tasks). While our model is adept at identifying forged areas in ID documents, how do we measure its success? Accuracy alone isn't enough, especially in cases where the forged regions might be small compared to the overall image. That's where the Dice coefficient comes in.
 Dice coefficient is a way to gauge how well our model's predicted forgery mask overlaps with the actual, ground truth mask (the one we created manually to label the forged areas). The Dice coefficient ranges from 0 (no overlap) to 1 (perfect overlap). We don't just use the Dice coefficient for evaluation; we also use it to guide our model's learning process. The Dice loss is a function that measures the disagreement between the predicted mask and the ground truth mask.
 During training, the model adjusts its parameters to minimize this loss, effectively learning to improve its overlap with the true forged regions. It's like a feedback loop that helps the model become a more accurate forgery detector over time. 
+
+![predicted mask](https://github.com/Layal-sh/Copy-Move-forgery-detection-in-ID-documents/assets/80123146/83a96ba5-3ab4-4080-80af-890f6cca21ad)
+
 Fig. 6 The original ID with its predicted mask containing the predicted segments
 By dividing our process into these distinct stages, we enhance efficiency and ensure that our resources are focused on the most relevant images. The integration of ResNet50, along with our custom modifications, empowers our system to detect even the most sophisticated forgery techniques.
  
 ## Results and Findings: 
 Our extensive testing and evaluation of the proposed solution have yielded promising results. The model has demonstrated a high degree of accuracy in identifying copy-move forgery, with a detection rate of over 98% on our test dataset. Furthermore, the system has proven to be resilient to various forms of image manipulation, including color adjustments, scaling, and rotation, ensuring its effectiveness in real-world scenarios.
-Notably, the system's performance has surpassed that of existing copy-move forgery detection techniques, particularly in the context of ID documents, where the forged elements can be strategically integrated to evade detection. This demonstrates the potential of machine learning to bolster ID verification systems. You can find the code here.
+Notably, the system's performance has surpassed that of existing copy-move forgery detection techniques, particularly in the context of ID documents, where the forged elements can be strategically integrated to evade detection. This demonstrates the potential of machine learning to bolster ID verification systems. 
+![output](https://github.com/Layal-sh/Copy-Move-forgery-detection-in-ID-documents/assets/80123146/4a3efe2b-d1a1-4ca0-a4f1-7f5916e736ec)
+![output2](https://github.com/Layal-sh/Copy-Move-forgery-detection-in-ID-documents/assets/80123146/593f1cc3-84f0-4692-96af-2b6e96348b62)
+
 ## Final Thoughts: 
 The battle against fake IDs is ongoing, but advancements in machine learning offer a powerful weapon in our arsenal. By integrating our detection model into existing verification processes, we can significantly enhance security and reduce the risks associated with identity fraud.
 However, our work isn't done. Future research will focus on refining the model, exploring additional features that can be used to detect copy-move forgery along with extracting the forged segment in the image, and staying one step ahead of the forgers who are constantly developing new techniques. The goal is to create an even more robust and accurate solution to protect identities and maintain the integrity of our identification systems.
